@@ -15,28 +15,38 @@ struct Day03: AdventDay {
 
   // Replace this with your solution for the second part of the day's challenge.
   func part2() -> Any {
-    let input = removeDontDo(input: removeDontDont(input: data))
-    return mul(input: input)
-  }
-
-  func removeDontDo(input: String) -> String {
-    // It uses the non-greedy .*? to ensure it matches the shortest possible text between don't() and do() (important if there are multiple occurrences in the string).
-    let pattern = #"don't\(\).*?do\(\)"#
-    let regex = try! NSRegularExpression(pattern: pattern, options: [])
+    var output = 0
+    let input = data
+    let regexPattern = #"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)"#
+    let regex = try! NSRegularExpression(pattern: regexPattern, options: [])
     let range = NSRange(input.startIndex..., in: input)
-    let matches = regex.matches(in: input, options: [], range: range)
-    print("don't_do matches: ", matches.count)
-    return regex.stringByReplacingMatches(in: input, options: [], range: range, withTemplate: "")
-  }
+    var enabled = true
 
-  func removeDontDont(input: String) -> String {
-    // It uses the non-greedy .*? to ensure it matches the shortest possible text between don't() and do() (important if there are multiple occurrences in the string).
-    let pattern = #"don't\(\).*?don't\(\)"#
-    let regex = try! NSRegularExpression(pattern: pattern, options: [])
-    let range = NSRange(input.startIndex..., in: input)
+    // Find all matches in the input string
     let matches = regex.matches(in: input, options: [], range: range)
-    print("don't_do matches: ", matches.count)
-    return regex.stringByReplacingMatches(in: input, options: [], range: range, withTemplate: "don't")
+
+    for match in matches {
+      let matchedString = (input as NSString).substring(with: match.range)
+      print("Matched: \(matchedString)")
+
+      if enabled && matchedString.hasPrefix("mul") {
+        if let firstRange = Range(match.range(at: 1), in: input),
+           let secondRange = Range(match.range(at: 2), in: input),
+           let x = Int(input[firstRange]),
+           let y = Int(input[secondRange]) {
+          //          print("Found mul(\(x),\(y))")
+          output += (x*y)
+        }
+      }
+      if matchedString.hasPrefix("don't(") {
+        enabled = false
+      }
+      if matchedString.hasPrefix("do(") {
+        enabled = true
+      }
+    }
+
+    return output
   }
 
   func mul(input: String) -> Int {
@@ -57,7 +67,7 @@ struct Day03: AdventDay {
            let secondRange = Range(match.range(at: 2), in: input),
            let x = Int(input[firstRange]),
            let y = Int(input[secondRange]) {
-//          print("Found mul(\(x),\(y))")
+          //          print("Found mul(\(x),\(y))")
           output += (x*y)
         }
       }
