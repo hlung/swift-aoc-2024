@@ -105,34 +105,30 @@ struct AdventOfCode: AsyncParsableCommand {
 
     // Data file
     let newDataFilePath = "\(currentPath)/Sources/Data/\(className).txt"
-    fileManager.createFile(atPath: newDataFilePath, contents: nil, attributes: [:])
-    guard !fileManager.fileExists(atPath: newDataFilePath) else {
-      fatalError("File already exists at \(newDataFilePath).")
-    }
-    print("Created \(newDataFilePath)")
+    try createFile(atPath: newDataFilePath, content: "")
 
     // Code fole
-    let oldCodeFilePath = "\(currentPath)/Sources/DayTemplate.swift"
+    let templateFilePath = "\(currentPath)/Sources/DayTemplate.swift"
     let newCodeFilePath = "\(currentPath)/Sources/\(className).swift"
-    guard !fileManager.fileExists(atPath: newCodeFilePath) else {
-      fatalError("File already exists at \(newCodeFilePath).")
-    }
-
-    try String(contentsOfFile: oldCodeFilePath, encoding: .utf8)
-      .replacingOccurrences(of: "DayTemplate", with: "\(className)")
-      .write(toFile: newCodeFilePath, atomically: true, encoding: .utf8)
-    print("Created \(newCodeFilePath)")
+    let newCodeFileContent = try String(contentsOfFile: templateFilePath, encoding: .utf8)
+      .replacingOccurrences(of: "DayTemplate", with: className)
+    try createFile(atPath: newCodeFilePath, content: newCodeFileContent)
 
     // Test file
-    let oldTestFilePath = "\(currentPath)/Tests/DayTemplate.swift"
+    let templateTestFilePath = "\(currentPath)/Tests/DayTemplate.swift"
     let newTestFilePath = "\(currentPath)/Tests/\(className).swift"
-    guard !fileManager.fileExists(atPath: newTestFilePath) else {
-      fatalError("File already exists at \(newTestFilePath).")
-    }
-    try String(contentsOfFile: oldTestFilePath, encoding: .utf8)
+    let newTestFileContent = try String(contentsOfFile: templateTestFilePath, encoding: .utf8)
       .replacingOccurrences(of: "DayTemplate", with: className)
-      .write(toFile: newTestFilePath, atomically: true, encoding: .utf8)
-    print("Created \(newTestFilePath)")
+    try createFile(atPath: newTestFilePath, content: newTestFileContent)
+  }
+
+  private func createFile(atPath path: String, content: String) throws {
+    let fileManager = FileManager.default
+    guard !fileManager.fileExists(atPath: path) else {
+      fatalError("File already exists at \(path).")
+    }
+    try content.write(toFile: path, atomically: true, encoding: .utf8)
+    print("Created \(path)")
   }
 
 }
