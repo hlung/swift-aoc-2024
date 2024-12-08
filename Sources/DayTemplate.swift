@@ -1,6 +1,6 @@
 import Foundation
 
-final class DayN: AdventDay {
+final class DayTemplate: AdventDay {
 
   init(data: String) {
   }

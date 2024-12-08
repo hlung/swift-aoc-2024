@@ -69,14 +69,15 @@ struct AdventOfCode: AsyncParsableCommand {
 
   func run() async throws {
     if let day = self.newday {
-      try runNewDay(day: day)
+      try createFiles(for: day)
       return
     }
 
     let challenges =
       if all {
         allChallenges
-      } else {
+      }
+      else {
         try [selectedChallenge]
       }
 
@@ -97,36 +98,39 @@ struct AdventOfCode: AsyncParsableCommand {
     }
   }
 
-  private func runNewDay(day: Int) throws {
+  private func createFiles(for day: Int) throws {
     let fileManager = FileManager.default
     let currentPath = fileManager.currentDirectoryPath
     let className = String(format: "Day%02d", Int(day))
 
     // Data file
-    let newDataFilePath = "\(currentPath)/Sources/Data/\(className)"
+    let newDataFilePath = "\(currentPath)/Sources/Data/\(className).txt"
     fileManager.createFile(atPath: newDataFilePath, contents: nil, attributes: [:])
+    guard !fileManager.fileExists(atPath: newDataFilePath) else {
+      fatalError("File already exists at \(newDataFilePath).")
+    }
     print("Created \(newDataFilePath)")
 
     // Code fole
-    let oldCodeFilePath = "\(currentPath)/Sources/DayN.swift"
+    let oldCodeFilePath = "\(currentPath)/Sources/DayTemplate.swift"
     let newCodeFilePath = "\(currentPath)/Sources/\(className).swift"
     guard !fileManager.fileExists(atPath: newCodeFilePath) else {
       fatalError("File already exists at \(newCodeFilePath).")
     }
 
     try String(contentsOfFile: oldCodeFilePath, encoding: .utf8)
-      .replacingOccurrences(of: "DayN", with: "\(className)")
+      .replacingOccurrences(of: "DayTemplate", with: "\(className)")
       .write(toFile: newCodeFilePath, atomically: true, encoding: .utf8)
     print("Created \(newCodeFilePath)")
 
     // Test file
-    let oldTestFilePath = "\(currentPath)/Tests/DayN.swift"
+    let oldTestFilePath = "\(currentPath)/Tests/DayTemplate.swift"
     let newTestFilePath = "\(currentPath)/Tests/\(className).swift"
     guard !fileManager.fileExists(atPath: newTestFilePath) else {
       fatalError("File already exists at \(newTestFilePath).")
     }
     try String(contentsOfFile: oldTestFilePath, encoding: .utf8)
-      .replacingOccurrences(of: "DayN", with: className)
+      .replacingOccurrences(of: "DayTemplate", with: className)
       .write(toFile: newTestFilePath, atomically: true, encoding: .utf8)
     print("Created \(newTestFilePath)")
   }
