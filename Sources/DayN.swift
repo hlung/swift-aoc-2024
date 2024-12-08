@@ -1,6 +1,6 @@
 import Foundation
 
-struct DayN: AdventDay {
+final class DayN: AdventDay {
 
   init(data: String) {
   }

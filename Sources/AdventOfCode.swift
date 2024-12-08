@@ -1,16 +1,12 @@
 import ArgumentParser
 import Foundation
 
-private let allChallenges: [any AdventDay] = {
-  let fileManager = FileManager.default
-  let currentPath = fileManager.currentDirectoryPath
-  let newCodeFilePath = "\(currentPath)/Sources"
-  let codeFiles = try! fileManager.contentsOfDirectory(atPath: currentPath).filter({ $0.hasPrefix("Day") && $0 != "DayN" })
-  let namespace = Bundle.main.infoDictionary?["CFBundleName"] as? String ?? ""
-
-  return codeFiles.map { file in
-    let className = file.split(separator: "/").last!
-    let myClass = NSClassFromString("\(namespace).\(className)") as! any AdventDay.Type
+nonisolated(unsafe) private let allChallenges: [any AdventDay] = {
+  return (0...25).compactMap { i in
+    let className = String(format: "Day%02d", Int(i))
+    guard let myClass = NSClassFromString("AdventOfCode.\(className)") as? any AdventDay.Type else {
+      return nil
+    }
     return myClass.init()
   }
 }()
@@ -20,8 +16,8 @@ struct AdventOfCode: AsyncParsableCommand {
   @Argument(help: "The day of the challenge. For December 1st, use '1'.")
   var day: Int?
 
-  @Argument(help: "Create a set of files for a new day challenge")
-  var newday: String? = nil
+  @Option(name: .shortAndLong, help: "Create a set of files for a new day challenge. e.g. 5 will create \"Day05\" files.")
+  var newday: Int? = nil
 
   @Flag(help: "Benchmark the time taken by the solution")
   var benchmark: Bool = false
@@ -35,10 +31,12 @@ struct AdventOfCode: AsyncParsableCommand {
       if let day {
         if let challenge = allChallenges.first(where: { $0.day == day }) {
           return challenge
-        } else {
+        }
+        else {
           throw ValidationError("No solution found for day \(day)")
         }
-      } else {
+      }
+      else {
         return latestChallenge
       }
     }
@@ -99,35 +97,36 @@ struct AdventOfCode: AsyncParsableCommand {
     }
   }
 
-  private func runNewDay(day: String) throws {
+  private func runNewDay(day: Int) throws {
     let fileManager = FileManager.default
     let currentPath = fileManager.currentDirectoryPath
+    let className = String(format: "Day%02d", Int(day))
 
-    // Data
-    let newDataFilePath = "\(currentPath)/Sources/Data/Day\(day).swift"
-    fileManager.createFile(atPath: newDataFilePath, contents: nil)
+    // Data file
+    let newDataFilePath = "\(currentPath)/Sources/Data/\(className)"
+    fileManager.createFile(atPath: newDataFilePath, contents: nil, attributes: [:])
     print("Created \(newDataFilePath)")
 
-    // Code
+    // Code fole
     let oldCodeFilePath = "\(currentPath)/Sources/DayN.swift"
-    let newCodeFilePath = "\(currentPath)/Sources/Day\(day).swift"
+    let newCodeFilePath = "\(currentPath)/Sources/\(className).swift"
     guard !fileManager.fileExists(atPath: newCodeFilePath) else {
       fatalError("File already exists at \(newCodeFilePath).")
     }
 
     try String(contentsOfFile: oldCodeFilePath, encoding: .utf8)
-      .replacingOccurrences(of: "DayN", with: "Day\(day)")
+      .replacingOccurrences(of: "DayN", with: "\(className)")
       .write(toFile: newCodeFilePath, atomically: true, encoding: .utf8)
     print("Created \(newCodeFilePath)")
 
-    // Test
-    let oldTestFilePath = "\(currentPath)/Sources/Tests/DayN.swift"
-    let newTestFilePath = "\(currentPath)/Sources/Tests/Day\(day).swift"
+    // Test file
+    let oldTestFilePath = "\(currentPath)/Tests/DayN.swift"
+    let newTestFilePath = "\(currentPath)/Tests/\(className).swift"
     guard !fileManager.fileExists(atPath: newTestFilePath) else {
       fatalError("File already exists at \(newTestFilePath).")
     }
     try String(contentsOfFile: oldTestFilePath, encoding: .utf8)
-      .replacingOccurrences(of: "DayN", with: "Day\(day)")
+      .replacingOccurrences(of: "DayN", with: className)
       .write(toFile: newTestFilePath, atomically: true, encoding: .utf8)
     print("Created \(newTestFilePath)")
   }
