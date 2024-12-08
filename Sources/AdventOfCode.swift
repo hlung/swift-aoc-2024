@@ -107,7 +107,7 @@ struct AdventOfCode: AsyncParsableCommand {
     let newDataFilePath = "\(currentPath)/Sources/Data/\(className).txt"
     try createFile(atPath: newDataFilePath, content: "")
 
-    // Code fole
+    // Code file
     let templateFilePath = "\(currentPath)/Sources/DayTemplate.swift"
     let newCodeFilePath = "\(currentPath)/Sources/\(className).swift"
     let newCodeFileContent = try String(contentsOfFile: templateFilePath, encoding: .utf8)
