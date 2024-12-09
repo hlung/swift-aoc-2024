@@ -4,7 +4,7 @@ import Testing
 
 final class DayTemplateTests {
   let testData = """
-    
+
     """
 
   @Test func testPart1() async throws {
