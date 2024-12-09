@@ -2,18 +2,18 @@ import Testing
 
 @testable import AdventOfCode
 
-final class DayTemplateTests {
+final class Day06Tests {
   let testData = """
-    
+
     """
 
   @Test func testPart1() async throws {
-    let challenge = DayTemplate(data: testData)
+    let challenge = Day06(data: testData)
     #expect(String(describing: challenge.part1()) == "")
   }
 
   @Test func testPart2() async throws {
-    let challenge = DayTemplate(data: testData)
+    let challenge = Day06(data: testData)
     #expect(String(describing: challenge.part2()) == "")
   }
 }
