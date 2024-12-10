@@ -23,6 +23,6 @@ final class Day06Tests {
 
   @Test func testPart2() async throws {
     let challenge = Day06(data: testData)
-    #expect(String(describing: challenge.part2()) == "")
+    #expect(String(describing: challenge.part2()) == "6")
   }
 }
