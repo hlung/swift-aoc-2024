@@ -16,8 +16,8 @@ struct AdventOfCode: AsyncParsableCommand {
   @Argument(help: "The day of the challenge. For December 1st, use '1'.")
   var day: Int?
 
-  @Option(name: .shortAndLong, help: "Create a set of files for a new day challenge. e.g. 5 will create \"Day05\" files.")
-  var newday: Int? = nil
+  @Flag(help: "Create a set of files for a new day challenge. e.g. 5 will create \"Day05\" files.")
+  var newday: Bool = false
 
   @Flag(help: "Benchmark the time taken by the solution")
   var benchmark: Bool = false
@@ -68,10 +68,12 @@ struct AdventOfCode: AsyncParsableCommand {
   }
 
   func run() async throws {
-    if let day = self.newday {
+    if self.newday {
+      let day = (allChallenges.last?.day ?? 0) + 1
       try createFiles(for: day)
       let year = Calendar(identifier: .gregorian).component(.year, from: Date())
-      print("Visit https://adventofcode.com/\(year)/day/\(day)")
+      print("See your question at https://adventofcode.com/\(year)/day/\(day)")
+      print("Good luck!")
       return
     }
 
@@ -107,7 +109,7 @@ struct AdventOfCode: AsyncParsableCommand {
 
     // Data file
     let newDataFilePath = "\(currentPath)/Sources/Data/\(className).txt"
-    try createFile(atPath: newDataFilePath, content: "(Your puzzle input)")
+    try createFile(atPath: newDataFilePath, content: "")
 
     // Code file
     let templateFilePath = "\(currentPath)/Sources/DayTemplate.swift"
