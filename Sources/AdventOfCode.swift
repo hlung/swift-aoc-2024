@@ -70,6 +70,8 @@ struct AdventOfCode: AsyncParsableCommand {
   func run() async throws {
     if let day = self.newday {
       try createFiles(for: day)
+      let year = Calendar(identifier: .gregorian).component(.year, from: Date())
+      print("Visit https://adventofcode.com/\(year)/day/\(day)")
       return
     }
 
@@ -105,7 +107,7 @@ struct AdventOfCode: AsyncParsableCommand {
 
     // Data file
     let newDataFilePath = "\(currentPath)/Sources/Data/\(className).txt"
-    try createFile(atPath: newDataFilePath, content: "")
+    try createFile(atPath: newDataFilePath, content: "(Your puzzle input)")
 
     // Code file
     let templateFilePath = "\(currentPath)/Sources/DayTemplate.swift"
