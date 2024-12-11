@@ -20,7 +20,14 @@ final class Day07: AdventDay {
   }
 
   func part2() -> Any {
-    return 0
+    var output = 0
+    for e in equations {
+      if e.isValid2() {
+        output += e.result
+//        print(output)
+      }
+    }
+    return output
   }
 
   struct Equation {
@@ -110,6 +117,88 @@ final class Day07: AdventDay {
 
       return dfs(node: firstNode)
     }
+
+    // I could refactor this to take an array of operators,
+    // but I'm too lazy :P
+    func isValid2() -> Bool {
+      let firstNode = Node(numbers[0])
+      var node = firstNode
+      for n in numbers.dropFirst() {
+        let newNode = Node(n)
+        node.children.append(newNode)
+        node = newNode
+      }
+
+      var path: [Int] = [] {
+        didSet {
+//          print(result, path)
+        }
+      }
+
+      func dfs(node: Node) -> Bool {
+        if path.isEmpty {
+          path.append(node.number)
+          for c in node.children {
+            return dfs(node: c)
+          }
+        }
+        else {
+          // Try plus
+          path.append(path.last! + node.number)
+          if node.children.isEmpty {
+            if path.last == result {
+              return true
+            }
+          }
+          else {
+            for c in node.children {
+              // ⭐️ Keypoint
+              // Cannot just `return dfs(node: c)` here because it will exit everything
+              // as soon as it finishes first leaf, which is too early.
+              if dfs(node: c) {
+                return true
+              }
+            }
+          }
+          path.removeLast()
+
+          // Try multiply
+          path.append(path.last! * node.number)
+          if node.children.isEmpty {
+            if path.last == result {
+              return true
+            }
+          }
+          else {
+            for c in node.children {
+              if dfs(node: c) {
+                return true
+              }
+            }
+          }
+          path.removeLast()
+
+          // Try concat
+          path.append(path.last! ||| node.number)
+          if node.children.isEmpty {
+            if path.last == result {
+              return true
+            }
+          }
+          else {
+            for c in node.children {
+              if dfs(node: c) {
+                return true
+              }
+            }
+          }
+          path.removeLast()
+        }
+        return false
+      }
+
+      return dfs(node: firstNode)
+    }
   }
 
 }
@@ -121,4 +210,18 @@ private class Node {
   init(_ number: Int) {
     self.number = number
   }
+}
+
+infix operator |||
+
+private func ||| (left: Int, right: Int) -> Int {
+  // Convert both numbers to strings
+  let leftString = String(left)
+  let rightString = String(right)
+
+  // Concatenate the strings
+  let concatenatedString = leftString + rightString
+
+  // Convert the concatenated string back to an integer
+  return Int(concatenatedString) ?? 0
 }
