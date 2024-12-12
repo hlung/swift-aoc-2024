@@ -203,15 +203,6 @@ struct Day07: AdventDay {
 
 }
 
-private class Node {
-  let number: Int
-  var children: [Node] = []
-
-  init(_ number: Int) {
-    self.number = number
-  }
-}
-
 infix operator |||
 
 private func ||| (left: Int, right: Int) -> Int {

@@ -23,11 +23,7 @@ extension [[Character]] {
 
   subscript(point: Point) -> Character? {
     get {
-      guard point.y >= 0 && point.y < self.count,
-            point.x >= 0 && point.x < self[point.y].count else {
-        return nil
-      }
-      return self[point.y][point.x]
+      return self[safe: point.y]?[safe: point.x]
     }
     set {
       guard point.y >= 0 && point.y < self.count,
@@ -39,4 +35,38 @@ extension [[Character]] {
     }
   }
 
+  func prettyDescription() {
+    // Print column indices
+    print("    ", terminator: "")
+    for x in 0..<(first?.count ?? 0) {
+      if x % 10 == 0 {
+        print(x / 10, terminator: "")
+      }
+      else {
+        print(" ", terminator: "")
+      }
+    }
+    print()
+    print("    ", terminator: "")
+    for x in 0..<(first?.count ?? 0) {
+      print(x % 10, terminator: "")
+    }
+    print()
+
+    // Print each row with row index
+    for (y, row) in enumerated() {
+      print(String(format: "%3d", y), terminator: " ")
+      for element in row {
+        print(element, terminator: "")
+      }
+      print()
+    }
+  }
+
+}
+
+public extension Collection {
+  subscript (safe index: Index) -> Iterator.Element? {
+    return index >= startIndex && index < endIndex ? self[index] : nil
+  }
 }
