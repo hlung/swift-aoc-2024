@@ -2,7 +2,7 @@ import Testing
 
 @testable import AdventOfCode
 
-final class DayTemplateTests {
+struct DayTemplateTests {
   let testData = """
 
     """

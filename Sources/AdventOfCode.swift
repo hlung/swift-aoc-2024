@@ -1,23 +1,43 @@
 import ArgumentParser
 import Foundation
 
-nonisolated(unsafe) private let allChallenges: [any AdventDay] = {
-  return (0...25).compactMap { i in
-    let className = String(format: "Day%02d", Int(i))
-    guard let myClass = NSClassFromString("AdventOfCode.\(className)") as? any AdventDay.Type else {
-      return nil
-    }
-    return myClass.init()
-  }
-}()
+// Add each new day implementation to this array:
+let allChallenges: [any AdventDay] = [
+  Day00(),
+  Day01(),
+  Day02(),
+  Day03(),
+  Day04(),
+  Day05(),
+  Day06(),
+  Day07(),
+//  Day08(),
+//  Day09(),
+//  Day10(),
+//  Day11(),
+//  Day12(),
+//  Day13(),
+//  Day14(),
+//  Day15(),
+//  Day16(),
+//  Day17(),
+//  Day18(),
+//  Day19(),
+//  Day20(),
+//  Day21(),
+//  Day22(),
+//  Day23(),
+//  Day24(),
+//  Day25(),
+]
 
 @main
 struct AdventOfCode: AsyncParsableCommand {
   @Argument(help: "The day of the challenge. For December 1st, use '1'.")
   var day: Int?
 
-  @Flag(help: "Create a set of files for a new day challenge. e.g. 5 will create \"Day05\" files.")
-  var newday: Bool = false
+  @Flag(help: "Create new code, data, and test files for the next day.")
+  var new: Bool = false
 
   @Flag(help: "Benchmark the time taken by the solution")
   var benchmark: Bool = false
@@ -68,10 +88,11 @@ struct AdventOfCode: AsyncParsableCommand {
   }
 
   func run() async throws {
-    if self.newday {
+    if self.new {
       let day = (allChallenges.last?.day ?? 0) + 1
       try createFiles(for: day)
       let year = Calendar(identifier: .gregorian).component(.year, from: Date())
+      try uncommentAllChallenges(for: day)
       print("See your question at https://adventofcode.com/\(year)/day/\(day)")
       print("Good luck!")
       return
@@ -133,6 +154,17 @@ struct AdventOfCode: AsyncParsableCommand {
     }
     try content.write(toFile: path, atomically: true, encoding: .utf8)
     print("Created \(path)")
+  }
+
+  private func uncommentAllChallenges(for day: Int) throws {
+    let fileManager = FileManager.default
+    let currentPath = fileManager.currentDirectoryPath
+    let filePath = "\(currentPath)/Sources/AdventOfCode.swift"
+    let className = String(format: "Day%02d", Int(day))
+
+    let fileContent = try String(contentsOfFile: filePath, encoding: .utf8)
+    let newFileContent = fileContent.replacingOccurrences(of: "//  \(className)()", with: "  \(className)()")
+    try newFileContent.write(toFile: filePath, atomically: true, encoding: .utf8)
   }
 
 }

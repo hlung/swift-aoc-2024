@@ -5,7 +5,7 @@ private let man: Character = "^"
 private let obstacle: Character = "#"
 private let passed: Character = "X"
 
-final class Day06: AdventDay {
+struct Day06: AdventDay {
 
   let map: [[Character]]
 

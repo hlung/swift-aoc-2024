@@ -1,6 +1,6 @@
 import Foundation
 
-final class Day07: AdventDay {
+struct Day07: AdventDay {
 
   let equations: [Equation]
 

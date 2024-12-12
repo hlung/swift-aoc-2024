@@ -1,6 +1,6 @@
 import Foundation
 
-final class Day05: AdventDay {
+struct Day05: AdventDay {
 
   struct Rule: Equatable {
     let a: Int

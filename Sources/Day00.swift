@@ -1,6 +1,6 @@
 import Foundation
 
-final class Day00: AdventDay {
+struct Day00: AdventDay {
   // Save your data in a corresponding text file in the `Data` directory.
   let data: String
 

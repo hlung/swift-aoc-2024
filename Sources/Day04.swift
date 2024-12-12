@@ -1,6 +1,6 @@
 import Foundation
 
-final class Day04: AdventDay {
+struct Day04: AdventDay {
 
   let grid: [[Character]]
 

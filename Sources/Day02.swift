@@ -1,6 +1,6 @@
 import Foundation
 
-final class Day02: AdventDay {
+struct Day02: AdventDay {
   // Save your data in a corresponding text file in the `Data` directory.
   var data: String
   var reports: [[Int]] = []
