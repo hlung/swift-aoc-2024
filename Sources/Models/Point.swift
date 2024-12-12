@@ -20,6 +20,14 @@ struct Point: Hashable, CustomStringConvertible {
     return Point(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
   }
 
+  static func * (lhs: Point, rhs: Point) -> Point {
+    return Point(x: lhs.x * rhs.x, y: lhs.y * rhs.y)
+  }
+
+  static func * (lhs: Point, value: Int) -> Point {
+    return Point(x: lhs.x * value, y: lhs.y * value)
+  }
+
   static func diff(lhs: Point, rhs: Point) -> Point {
     return Point(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
   }
