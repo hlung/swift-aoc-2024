@@ -8,12 +8,16 @@ struct DayTemplateTests {
     """
 
   @Test func testPart1() async throws {
-    let challenge = DayTemplate(data: testData)
-    #expect(String(describing: challenge.part1()) == "")
+    let day = DayTemplate(data: testData)
+    #expect(
+      "\(day.part1())" == ""
+    )
   }
 
   @Test func testPart2() async throws {
-    let challenge = DayTemplate(data: testData)
-    #expect(String(describing: challenge.part2()) == "")
+    let day = DayTemplate(data: testData)
+    #expect(
+      "\(day.part2())" == ""
+    )
   }
 }
