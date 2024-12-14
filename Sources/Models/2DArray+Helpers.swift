@@ -1,3 +1,5 @@
+import Foundation
+
 extension [[Character]] {
 
   func find(_ c: Character) -> Point? {
@@ -23,16 +25,22 @@ extension [[Character]] {
 
   subscript(point: Point) -> Character? {
     get {
+      guard isValid(point) else {
+        return nil
+      }
       return self[safe: point.y]?[safe: point.x]
     }
     set {
-      guard point.y >= 0 && point.y < self.count,
-            point.x >= 0 && point.x < self[point.y].count,
+      guard isValid(point),
             let newValue = newValue else {
         return
       }
       self[point.y][point.x] = newValue
     }
+  }
+  
+  private func isValid(_ point: Point) -> Bool {
+    return point.y >= 0 && point.y < self.count && point.x >= 0 && point.x < self[point.y].count
   }
 
   func prettyDescription() {
