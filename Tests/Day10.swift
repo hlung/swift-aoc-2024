@@ -24,7 +24,7 @@ struct Day10Tests {
   @Test func testPart2() async throws {
     let day = Day10(data: testData)
     #expect(
-      "\(day.part2())" == ""
+      "\(day.part2())" == "81"
     )
   }
 }
