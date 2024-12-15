@@ -37,4 +37,13 @@ struct Point: Hashable, CustomStringConvertible {
   var description: String {
     return "Point(\(x), \(y))"
   }
+
+  func neighbors() -> [Point] {
+    return [
+      self + Point(0, -1),
+      self + Point(0, 1),
+      self + Point(-1, 0),
+      self + Point(1, 0),
+    ]
+  }
 }
