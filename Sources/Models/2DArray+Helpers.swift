@@ -1,17 +1,20 @@
 import Foundation
 
-extension [[Character]] {
+extension Array where Element: Collection,
+                      Element.Element: Equatable,
+                      Index == Int,
+                      Element.Index == Int {
 
-  func find(_ c: Character) -> Point? {
+  func find(_ c: Element.Element) -> Point? {
     for (y, row) in self.enumerated() {
-      if let x = row.firstIndex(of: c) {
+      if let x = row.firstIndex(where: { $0 == c }) {
         return Point(x: x, y: y)
       }
     }
     return nil
   }
 
-  func count(_ c: Character) -> Int {
+  func count(_ c: Element.Element) -> Int {
     var count = 0
     for row in self {
       for char in row {
@@ -23,24 +26,9 @@ extension [[Character]] {
     return count
   }
 
-  subscript(point: Point) -> Character? {
-    get {
-      guard isValid(point) else {
-        return nil
-      }
-      return self[safe: point.y]?[safe: point.x]
-    }
-    set {
-      guard isValid(point),
-            let newValue = newValue else {
-        return
-      }
-      self[point.y][point.x] = newValue
-    }
-  }
-  
   private func isValid(_ point: Point) -> Bool {
-    return point.y >= 0 && point.y < self.count && point.x >= 0 && point.x < self[point.y].count
+    return point.y >= 0 && point.y < self.count &&
+           point.x >= 0 && point.x < self[point.y].count
   }
 
   func prettyDescription() {
@@ -73,8 +61,40 @@ extension [[Character]] {
 
 }
 
-public extension Collection {
-  subscript (safe index: Index) -> Iterator.Element? {
-    return index >= startIndex && index < endIndex ? self[index] : nil
+extension [[Int]] {
+
+  subscript(point: Point) -> Int? {
+    get {
+      guard isValid(point) else { return nil }
+      return self[point.y][point.x]
+    }
+    set {
+      guard isValid(point) else { return }
+      guard let newValue = newValue else { return }
+      self[point.y][point.x] = newValue
+    }
   }
+
 }
+
+extension [[Character]] {
+
+  subscript(point: Point) -> Character? {
+    get {
+      guard isValid(point) else { return nil }
+      return self[point.y][point.x]
+    }
+    set {
+      guard isValid(point) else { return }
+      guard let newValue = newValue else { return }
+      self[point.y][point.x] = newValue
+    }
+  }
+
+}
+
+//public extension Collection {
+//  subscript (safe index: Index) -> Iterator.Element? {
+//    return index >= startIndex && index < endIndex ? self[index] : nil
+//  }
+//}
