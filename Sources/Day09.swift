@@ -214,15 +214,18 @@ private extension [Int?] {
       }
     }
 
+    print("0                   1                   2                   ")
+    print("0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 ")
     while lastDataIndex >= 0 {
 
       calculateNextLastDataInfo()
       let limit = lastDataIndex - lastDataChunkWidth
 
       var contiguousFreeSpaceCount = 0
-
       for (i, n) in self.enumerated() {
-        if n == nil, i < limit {
+        // ⭐️ Keypoint
+        // We don't check free space at and beyond the range of file we are trying to move
+        if n == nil, i <= limit {
           contiguousFreeSpaceCount += 1
           if contiguousFreeSpaceCount >= lastDataChunkWidth {
             // found enough space, move file
@@ -238,10 +241,12 @@ private extension [Int?] {
         }
       }
 
-      lastDataIndex -= lastDataChunkWidth
-
 //      print(prettyDescription())
 
+      // ⭐️ Keypoint
+      // Don't forget to move the lastDataIndex to before the start of file
+      // So it won't recognize the same file again!
+      lastDataIndex -= lastDataChunkWidth
     }
   }
 }

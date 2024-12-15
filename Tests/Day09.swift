@@ -21,14 +21,14 @@ struct Day09Tests {
     )
   }
 
-  @Test func testExtra() async throws {
+  @Test func testPart1Extra1() async throws {
     let day = Day09(data: "2333133121414161402")
     #expect(
       "\(day.part1())" == "2515"
     )
   }
 
-  @Test func testExtra1() async throws {
+  @Test func testPart1Extra2() async throws {
     #expect(
       "\(Day09(data: "111111111").part1())" == "23"
     )
@@ -40,6 +40,12 @@ struct Day09Tests {
     )
     #expect(
       "\(Day09(data: "101000011011").part1())" == "23"
+    )
+  }
+
+  @Test func testPart2Extra1() async throws {
+    #expect(
+      "\(Day09(data: "10120301214").part2())" == "123"
     )
   }
 }
