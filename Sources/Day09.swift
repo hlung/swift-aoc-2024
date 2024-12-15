@@ -133,7 +133,19 @@ struct Day09: AdventDay {
   }
 
   func part2() -> Any {
-    return 0
+    var disk = [Int?]()
+    var isSpace = false
+    var id = -1
+    for n in data {
+      if !isSpace { id += 1 }
+      let c = isSpace ? nil : id
+      disk.append(contentsOf: Array(repeating: c, count: n))
+      isSpace.toggle()
+    }
+    print(disk.prettyDescription())
+    disk.defragContiguous()
+    print(disk.prettyDescription())
+    return disk.checksum()
   }
 
 }
@@ -145,21 +157,22 @@ private extension [Int?] {
 
   func checksum() -> Int {
     var output = 0
-    for (i, n) in self.compacted().enumerated() {
-      output += i * n
-      print(output, ":", i*n, "=", i, "*", n)
+    for (i, n) in self.enumerated() {
+      if let n {
+        output += i * n
+        print(output, ":", i*n, "=", i, "*", n)
+      }
     }
     return output
   }
 
   mutating func defrag() {
-    var lastDataIndex = self.count
+    var lastDataIndex = self.count - 1
 
     func nextLastDataIndex() -> Int {
-      repeat {
+      while self[lastDataIndex] == nil {
         lastDataIndex -= 1
       }
-      while self[lastDataIndex] == nil
       return lastDataIndex
     }
 
@@ -174,6 +187,61 @@ private extension [Int?] {
       if i >= lastDataIndex {
         break
       }
+    }
+  }
+
+  mutating func defragContiguous() {
+    var lastDataIndex = self.count - 1
+    var lastDataChunkWidth = 0
+    var id: Int = .max
+
+    func calculateNextLastDataInfo() {
+      lastDataChunkWidth = 0
+
+      while lastDataIndex >= 0
+              && (self[lastDataIndex] == nil || self[lastDataIndex] ?? 0 >= id){
+        lastDataIndex -= 1
+      }
+
+      id = self[lastDataIndex] ?? 0
+      for i in (0...lastDataIndex).reversed() {
+        if self[i] == id {
+          lastDataChunkWidth += 1
+        }
+        else {
+          break
+        }
+      }
+    }
+
+    while lastDataIndex >= 0 {
+
+      calculateNextLastDataInfo()
+      let limit = lastDataIndex - lastDataChunkWidth
+
+      var contiguousFreeSpaceCount = 0
+
+      for (i, n) in self.enumerated() {
+        if n == nil, i < limit {
+          contiguousFreeSpaceCount += 1
+          if contiguousFreeSpaceCount >= lastDataChunkWidth {
+            // found enough space, move file
+            for j in 0..<lastDataChunkWidth {
+              self[i-j] = self[lastDataIndex-j]
+              self[lastDataIndex-j] = nil
+            }
+            break
+          }
+        }
+        else {
+          contiguousFreeSpaceCount = 0
+        }
+      }
+
+      lastDataIndex -= lastDataChunkWidth
+
+//      print(prettyDescription())
+
     }
   }
 }
