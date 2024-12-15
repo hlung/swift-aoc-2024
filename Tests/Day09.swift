@@ -33,7 +33,13 @@ struct Day09Tests {
       "\(Day09(data: "111111111").part1())" == "23"
     )
     #expect(
-      "\(Day09(data: "011111111").part1())" == "7"
+      "\(Day09(data: "011111111").part1())" == "13"
+    )
+    #expect(
+      "\(Day09(data: "011011111").part1())" == "14"
+    )
+    #expect(
+      "\(Day09(data: "101000011011").part1())" == "23"
     )
   }
 }

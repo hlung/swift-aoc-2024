@@ -18,6 +18,22 @@ struct Day09: AdventDay {
   }
 
   func part1() -> Any {
+    var disk = [Int?]()
+    var isSpace = false
+    var id = -1
+    for n in data {
+      if !isSpace { id += 1 }
+      let c = isSpace ? nil : id
+      disk.append(contentsOf: Array(repeating: c, count: n))
+      isSpace.toggle()
+    }
+    print(disk.prettyDescription())
+    disk.defrag()
+    print(disk.prettyDescription())
+    return disk.checksum()
+  }
+
+  func part1Old() -> Any {
     // I'm starting with determining the frontIndex and backIndex
     var output = 0 {
       didSet { print(output) }
@@ -122,5 +138,42 @@ struct Day09: AdventDay {
 
 }
 
-// 32782
-// frontIndex 49705 - 6259141897857
+private extension [Int?] {
+  func prettyDescription() -> String {
+    map { $0 == nil ? "." : "\($0!)" }.joined(separator: "|")
+  }
+
+  func checksum() -> Int {
+    var output = 0
+    for (i, n) in self.compacted().enumerated() {
+      output += i * n
+      print(output, ":", i*n, "=", i, "*", n)
+    }
+    return output
+  }
+
+  mutating func defrag() {
+    var lastDataIndex = self.count
+
+    func nextLastDataIndex() -> Int {
+      repeat {
+        lastDataIndex -= 1
+      }
+      while self[lastDataIndex] == nil
+      return lastDataIndex
+    }
+
+    lastDataIndex = nextLastDataIndex()
+
+    for (i, n) in self.enumerated() {
+      if n == nil {
+        self[i] = self[lastDataIndex]
+        self[lastDataIndex] = nil
+        lastDataIndex = nextLastDataIndex()
+      }
+      if i >= lastDataIndex {
+        break
+      }
+    }
+  }
+}
