@@ -48,35 +48,34 @@ struct Day10: AdventDay {
   func part2() -> Any {
     let trailheads = map.points(of: 0)
 
-    // dfs
-    var output = 0
-//    var reached = Set<Point>()
-    func findTrails(start: Point, end: Int) {
-      let currentVal = map[start]!
-      let nextVal = currentVal + 1
-      for np in start.neighbors() {
-        if map[np] == nextVal/*, !reached.contains(np) */{
-          if map[np] == end {
-            output += 1
-            print(output, start, np)
+    func findTrails(start: Point, end: Int) -> Int {
+      var output = 0
+
+      func dfs(start: Point, end: Int) {
+        let currentVal = map[start]!
+        let nextVal = currentVal + 1
+        for np in start.neighbors() {
+          if map[np] == nextVal {
+            if map[np] == end {
+              output += 1
+              print(output, start, np)
+            }
+            else {
+              dfs(start: np, end: end)
+            }
           }
-          else {
-            findTrails(start: np, end: end)
-          }
-//          reached.insert(np)
         }
       }
+
+      dfs(start: start, end: end)
+
+      return output
     }
 
     var finalOutput = 0
     for trailhead in trailheads {
-      output = 0
-//      reached.removeAll()
-      findTrails(start: trailhead, end: 9)
-//      print(output)
-      finalOutput += output
+      finalOutput += findTrails(start: trailhead, end: 9)
     }
-
     return finalOutput
   }
 
