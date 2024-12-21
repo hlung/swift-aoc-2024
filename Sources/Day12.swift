@@ -13,32 +13,33 @@ struct Day12: AdventDay {
   }
 
   func part1() -> Any {
-    // [Region: (Area, Fence)]
     var map = map
-    var output: [Character: Region] = [:]
+    var output: [(Character, Region)] = []
 
-    func region(at p: Point, condition: Character) -> Region {
+    func region(at p: Point) -> Region {
       var visited: Set<Point> = []
+      let character = map[p]
 
+      // Add connected region to `visited` set
       func dfs(_ p: Point) {
         visited.insert(p)
+        map[p] = Constants.empty // clear map point so we don't visit it again
         for np in p.neighbors() {
-          if let n = map[np], n == condition, !visited.contains(np) {
+          if let n = map[np], n == character, !visited.contains(np) {
             dfs(np)
           }
         }
       }
       dfs(p)
 
+      // Count fences using `visited` set
       var fence = 0
-
       for p in visited {
         let neighbors = p.neighbors()
-        map[p] = Constants.empty // clear map at that point so we don't visit again
-        var count = neighbors.count
+        var count = 0
         for np in neighbors {
-          if visited.contains(np) {
-            count -= 1
+          if !visited.contains(np) {
+            count += 1
           }
         }
         fence += count
@@ -51,21 +52,16 @@ struct Day12: AdventDay {
       for (x, _) in row.enumerated() {
         let p = Point(x, y)
         if let c = map[p], c != Constants.empty {
-          let r = region(at: p, condition: c)
-          let original = output[c, default: Region(area: 0, fence: 0)]
-          let new = Region(
-            area: r.area + original.area,
-            fence: r.fence + original.fence
-          )
-          output[c] = new
+          let r = region(at: p)
+          output.append((c, r))
         }
       }
     }
 
-    return output.keys.reduce(into: 0) { p, k in
-      let r = output[k]!
+    return output.reduce(into: 0) { p, t in
+      let (c, r) = t
       p += r.area * r.fence
-      print("\(k) -> \(r.area) * \(r.fence) = \(r.area * r.fence)")
+      print("\(c) -> \(r.area) * \(r.fence) = \(r.area * r.fence)")
     }
   }
 
