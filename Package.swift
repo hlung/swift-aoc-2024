@@ -35,5 +35,5 @@ let package = Package(
       dependencies: ["AdventOfCode"] + dependencies
     )
   ],
-  swiftLanguageModes: [.v6]
+  swiftLanguageModes: [.v5]
 )

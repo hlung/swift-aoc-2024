@@ -22,26 +22,19 @@ struct Day11: AdventDay {
     var newStones: [Int] = []
     for i in 1...times {
       newStones.removeAll(keepingCapacity: true)
-      
-      // Serial
-      newStones.append(contentsOf: stones.blink())
 
-      // Concurrent
       // This won't compile in Swift 6...
-//      let myStones = stones
-//      let semaphore = DispatchSemaphore(value: 0)
-//      Task {
-//        do {
-//          newStones = try await myStones.blinkAsync()
-//        } catch {
-//          print(error)
-//        }
-//        semaphore.signal()
-//      }
-//      semaphore.wait()
+      let semaphore = DispatchSemaphore(value: 0)
+      Task {
+        // Serial
+        newStones = stones.blink()
+        // Concurrent
+//        newStones = try await stones.blinkAsync()
+        semaphore.signal()
+      }
+      semaphore.wait()
 
       stones = newStones
-
 //      print(stones)
       print("blink \(i): stones count: \(stones.count)")
     }
@@ -72,16 +65,18 @@ extension [Int] {
     return newStones
   }
 
-  /*
   func blinkAsync() async throws -> [Int] {
-//    let chunkSize = count/5
-//    var ranges = [Range<Int>]()
-//    for i in 0..<5 {
-//      ranges.append(Range((chunkSize*i)..<(chunkSize*(i+1))))
-//    }
+    let chunkSize: Int =
+      if count < 10_000_000 {
+        count
+      }
+      else {
+        count/10
+      }
+
     return try await withThrowingTaskGroup(of: [Int].self) { group in
       var output = [Int]()
-      let chunks = self.chunked(into: 100000)
+      let chunks = self.chunked(into: chunkSize)
       for array in chunks {
         group.addTask{
           return array.blink()
@@ -93,7 +88,6 @@ extension [Int] {
       return output
     }
   }
-   */
 }
 
 extension Int {
