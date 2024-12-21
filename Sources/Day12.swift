@@ -13,9 +13,8 @@ struct Day12: AdventDay {
   }
 
   func part1() -> Any {
-    // [Region: (Area, Fence)]
     var map = map
-    var output: [Character: Region] = [:]
+    var output: [(Character, Region)] = []
 
     func region(at p: Point, condition: Character) -> Region {
       var visited: Set<Point> = []
@@ -52,20 +51,15 @@ struct Day12: AdventDay {
         let p = Point(x, y)
         if let c = map[p], c != Constants.empty {
           let r = region(at: p, condition: c)
-          let original = output[c, default: Region(area: 0, fence: 0)]
-          let new = Region(
-            area: r.area + original.area,
-            fence: r.fence + original.fence
-          )
-          output[c] = new
+          output.append((c, r))
         }
       }
     }
 
-    return output.keys.reduce(into: 0) { p, k in
-      let r = output[k]!
+    return output.reduce(into: 0) { p, t in
+      let (c, r) = t
       p += r.area * r.fence
-      print("\(k) -> \(r.area) * \(r.fence) = \(r.area * r.fence)")
+      print("\(c) -> \(r.area) * \(r.fence) = \(r.area * r.fence)")
     }
   }
 
