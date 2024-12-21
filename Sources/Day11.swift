@@ -20,20 +20,20 @@ struct Day11: AdventDay {
     print(stones.map({ s in s.string }))
 
     var newStones: [Stone] = []
-    for _ in 1...times {
+    for i in 1...times {
       for s in stones {
         newStones.append(contentsOf: s.blink())
       }
       stones = newStones
       newStones = []
 //      print(stones.map({ s in s.string }))
-
+      print("blink \(i): stones count: \(stones.count)")
     }
     return stones.count
   }
 
   func part2() -> Any {
-    return 0
+    return blink(times: 75)
   }
 
 }
