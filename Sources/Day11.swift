@@ -21,9 +21,7 @@ struct Day11: AdventDay {
 
     var newStones: [Int] = []
     for i in 1...times {
-      for s in stones {
-        newStones.append(contentsOf: s.blink())
-      }
+      newStones = stones.blink()
       stones = newStones
       newStones.removeAll(keepingCapacity: true)
 //      print(stones.map({ s in s.string }))
@@ -33,9 +31,19 @@ struct Day11: AdventDay {
   }
 
   func part2() -> Any {
-    return blink(times: 75)
+    return blink(times: 40)
   }
 
+}
+
+extension [Int] {
+  func blink() -> [Int] {
+    var newStones: [Int] = []
+    for s in self {
+      newStones.append(contentsOf: s.blink())
+    }
+    return newStones
+  }
 }
 
 extension Int {
