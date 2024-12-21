@@ -2,13 +2,13 @@ import Foundation
 
 struct Day11: AdventDay {
 
-  let stones: [Stone]
+  let stones: [Int]
 
   init(data: String) {
     self.stones = data
       .trimmingCharacters(in: .whitespacesAndNewlines)
       .split(separator: " ")
-      .map { Stone(String($0)) }
+      .map { Int($0) ?? 0 }
   }
 
   func part1() -> Any {
@@ -16,16 +16,16 @@ struct Day11: AdventDay {
   }
 
   func blink(times: Int) -> Any {
-    var stones: [Stone] = stones
-    print(stones.map({ s in s.string }))
+    var stones: [Int] = stones
+    print(stones)
 
-    var newStones: [Stone] = []
+    var newStones: [Int] = []
     for i in 1...times {
       for s in stones {
         newStones.append(contentsOf: s.blink())
       }
       stones = newStones
-      newStones = []
+      newStones.removeAll(keepingCapacity: true)
 //      print(stones.map({ s in s.string }))
       print("blink \(i): stones count: \(stones.count)")
     }
@@ -38,25 +38,40 @@ struct Day11: AdventDay {
 
 }
 
-struct Stone {
-  let string: String
+extension Int {
+  func blink() -> [Int] {
+    if self == 0 {
+      return [1]
+    }
 
-  init(_ string: String) {
-    self.string = string
-  }
+    let string = String(self)
+    if string.count % 2 == 0 {
+      return [Int(string.firstHalf)!, Int(string.secondHalf)!]
+    }
 
-  func blink() -> [Stone] {
-    if string == "0" {
-      return [Stone("1")]
-    }
-    else if string.count % 2 == 0 {
-      return [Stone(string.firstHalf), Stone(string.secondHalf)]
-    }
-    else {
-      return [Stone(String(Int(string)! * 2024))]
-    }
+    return [self * 2024]
   }
 }
+
+//struct Stone {
+//  let string: String
+//
+//  init(_ string: String) {
+//    self.string = string
+//  }
+//
+//  func blink() -> [Stone] {
+//    if string == "0" {
+//      return [Stone("1")]
+//    }
+//    else if string.count % 2 == 0 {
+//      return [Stone(string.firstHalf), Stone(string.secondHalf)]
+//    }
+//    else {
+//      return [Stone(String(Int(string)! * 2024))]
+//    }
+//  }
+//}
 
 extension String {
   var firstHalf: String {
