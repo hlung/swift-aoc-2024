@@ -54,45 +54,28 @@ struct Day11: AdventDay {
 //  }
 
   func blink(times: StoneType) -> Any {
-    var stones = self.stones
+    var dict: [Int: Int] = [:]
+    for s in stones {
+      dict[s, default: 0] += 1
+    }
     print(stones)
-    stones.reserveCapacity(1_000_000_000_000)
 
-    for i in 1...times {
-      let count = stones.count
-      for index in 0..<count {
-        let stone = stones[index]
-        if stone == 0 {
-          stones[index] = 1
-          continue
+    for time in 1...times {
+      for (key, count) in dict {
+        // ⭐️ Key point
+        // Since the same stone will create the same stones,
+        // we can greatly optimize it by updating the count of involved stones
+        // all at once (not one by one).
+        let new = key.blink()
+        dict[key]! -= count
+        for s in new {
+          dict[s, default: 0] += count
         }
-        let digitsCount = stone.digits  // Calculate number of digits
-        if digitsCount % 2 == 0 {
-          let divisor = Int(pow(10.0, Double(digitsCount / 2)))  // Power of 10 to divide the number
-          let firstPart = stone / divisor  // Get the first part by dividing
-          let secondPart = stone % divisor  // Get the second part using modulus
-          stones[index] = firstPart
-          stones.append(secondPart)
-          continue
-        }
-        stones[index] = stone * 2024
       }
-
-      // This won't compile in Swift 6...
-//      let semaphore = DispatchSemaphore(value: 0)
-//      Task { @MainActor in
-//        // Serial
-//        newStones = stones.blink()
-//        // Concurrent
-////        newStones = try await stones.blinkAsync()
-//        semaphore.signal()
-//      }
-//      semaphore.wait()
-//      print(stones)
-      print("blink \(i): stones count: \(stones.count)")
+      print("blink \(time): stones count: \(dict.values.reduce(0) { $0 + $1 })")
     }
 
-    return stones.count
+    return dict.values.reduce(0) { $0 + $1 }
   }
 
 }

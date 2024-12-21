@@ -57,7 +57,7 @@ struct Day06: AdventDay {
         direction: currentDirection,
         passedMarking: nil
       ) {
-        // ⭐️ Keypoint
+        // ⭐️ Key point
         // We find a loop by checking when we hit an obstacle,
         // if that obstacle is hit twice while travelling in the same direction,
         // then it is a loop.
@@ -66,7 +66,7 @@ struct Day06: AdventDay {
 //          print(newMap.map { String($0) })
           return true
         }
-        // ⭐️ Keypoint
+        // ⭐️ Key point
         // We only add obstacle marking ONLY if the map has no obstacle before.
         // The obstacle has a "direction information" ("D", "U", "L", "R" rather than just one "O")
         // because we may be turning in the same spot twice, but if we are moving in different direction then it may not be a loop.

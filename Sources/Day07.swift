@@ -86,7 +86,7 @@ struct Day07: AdventDay {
           }
           else {
             for c in node.children {
-              // ⭐️ Keypoint
+              // ⭐️ Key point
               // Cannot just `return dfs(node: c)` here because it will exit everything
               // as soon as it finishes first leaf, which is too early.
               if dfs(node: c) {
@@ -152,7 +152,7 @@ struct Day07: AdventDay {
           }
           else {
             for c in node.children {
-              // ⭐️ Keypoint
+              // ⭐️ Key point
               // Cannot just `return dfs(node: c)` here because it will exit everything
               // as soon as it finishes first leaf, which is too early.
               if dfs(node: c) {

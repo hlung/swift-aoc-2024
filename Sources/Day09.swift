@@ -64,7 +64,7 @@ struct Day09: AdventDay {
             frontDataIndex += 1
             frontChunkWidth = data[frontDataIndex]
 
-            // ⭐️ Keypoint
+            // ⭐️ Key point
             // Some next width is zero
             if frontChunkWidth > 0 {
               // Move to "fill empty spcae" mode
@@ -93,7 +93,7 @@ struct Day09: AdventDay {
           // Move to next data from the back
           repeat {
             backDataIndex -= 1
-            // ⭐️ Keypoint
+            // ⭐️ Key point
             // Don't forget to take the empty space into account
             // when updating backIndex
             let backSpaceWidth = data[backDataIndex]
@@ -111,7 +111,7 @@ struct Day09: AdventDay {
             frontDataIndex += 1
             frontChunkWidth = data[frontDataIndex]
 
-            // ⭐️ Keypoint
+            // ⭐️ Key point
             // Some next width is zero
             if frontChunkWidth > 0 {
               // Move back to "read data" mode
@@ -223,7 +223,7 @@ private extension [Int?] {
 
       var contiguousFreeSpaceCount = 0
       for (i, n) in self.enumerated() {
-        // ⭐️ Keypoint
+        // ⭐️ Key point
         // We don't check free space at and beyond the range of file we are trying to move
         if n == nil, i <= limit {
           contiguousFreeSpaceCount += 1
@@ -243,7 +243,7 @@ private extension [Int?] {
 
 //      print(prettyDescription())
 
-      // ⭐️ Keypoint
+      // ⭐️ Key point
       // Don't forget to move the lastDataIndex to before the start of file
       // So it won't recognize the same file again!
       lastDataIndex -= lastDataChunkWidth
