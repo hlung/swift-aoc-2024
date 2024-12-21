@@ -21,12 +21,31 @@ struct Day11: AdventDay {
 
     var newStones: [Int] = []
     for i in 1...times {
-      newStones = stones.blink()
-      stones = newStones
       newStones.removeAll(keepingCapacity: true)
-//      print(stones.map({ s in s.string }))
+      
+      // Serial
+      newStones.append(contentsOf: stones.blink())
+
+      // Concurrent
+      // This won't compile in Swift 6...
+//      let myStones = stones
+//      let semaphore = DispatchSemaphore(value: 0)
+//      Task {
+//        do {
+//          newStones = try await myStones.blinkAsync()
+//        } catch {
+//          print(error)
+//        }
+//        semaphore.signal()
+//      }
+//      semaphore.wait()
+
+      stones = newStones
+
+//      print(stones)
       print("blink \(i): stones count: \(stones.count)")
     }
+
     return stones.count
   }
 
@@ -34,6 +53,14 @@ struct Day11: AdventDay {
     return blink(times: 40)
   }
 
+}
+
+extension Array {
+  func chunked(into size: Int) -> [[Element]] {
+    return stride(from: 0, to: count, by: size).map {
+      Array(self[$0 ..< Swift.min($0 + size, count)])
+    }
+  }
 }
 
 extension [Int] {
@@ -44,9 +71,44 @@ extension [Int] {
     }
     return newStones
   }
+
+  /*
+  func blinkAsync() async throws -> [Int] {
+//    let chunkSize = count/5
+//    var ranges = [Range<Int>]()
+//    for i in 0..<5 {
+//      ranges.append(Range((chunkSize*i)..<(chunkSize*(i+1))))
+//    }
+    return try await withThrowingTaskGroup(of: [Int].self) { group in
+      var output = [Int]()
+      let chunks = self.chunked(into: 100000)
+      for array in chunks {
+        group.addTask{
+          return array.blink()
+        }
+      }
+      for try await array in group {
+        output.append(contentsOf: array)
+      }
+      return output
+    }
+  }
+   */
 }
 
 extension Int {
+//  func blink() -> [Int] {
+//    if self == 0 {
+//      return [1]
+//    }
+//
+//    if digits % 2 == 0 {
+//      return [digits/2, digits/2]
+//    }
+//
+//    return [(self * 2024).digits]
+//  }
+
   func blink() -> [Int] {
     if self == 0 {
       return [1]
@@ -61,35 +123,30 @@ extension Int {
   }
 }
 
-//struct Stone {
-//  let string: String
-//
-//  init(_ string: String) {
-//    self.string = string
-//  }
-//
-//  func blink() -> [Stone] {
-//    if string == "0" {
-//      return [Stone("1")]
-//    }
-//    else if string.count % 2 == 0 {
-//      return [Stone(string.firstHalf), Stone(string.secondHalf)]
-//    }
-//    else {
-//      return [Stone(String(Int(string)! * 2024))]
-//    }
-//  }
-//}
+extension Int {
+  var digits: Int {
+    var num = self
+    var count = 0
+    while num != 0 {
+      let digit = abs(num % 10)
+      if digit != 0 {
+        count += 1
+      }
+      num = num / 10
+    }
+    return count
+  }
+}
 
 extension String {
   var firstHalf: String {
     let index = index(startIndex, offsetBy: count / 2)
-    return String(self[..<index]).trimmingPrefixZeros
+    return String(self[..<index])//.trimmingPrefixZeros
   }
 
   var secondHalf: String {
     let index = index(startIndex, offsetBy: count / 2)
-    return String(self[index...]).trimmingPrefixZeros
+    return String(self[index...])//.trimmingPrefixZeros
   }
 
   var trimmingPrefixZeros: String {
