@@ -27,9 +27,9 @@ struct Day09: AdventDay {
       disk.append(contentsOf: Array(repeating: c, count: n))
       isSpace.toggle()
     }
-    print(disk.prettyDescription())
+    print(disk.printPrettyDescription())
     disk.defrag()
-    print(disk.prettyDescription())
+    print(disk.printPrettyDescription())
     return disk.checksum()
   }
 
@@ -142,16 +142,16 @@ struct Day09: AdventDay {
       disk.append(contentsOf: Array(repeating: c, count: n))
       isSpace.toggle()
     }
-    print(disk.prettyDescription())
+    print(disk.printPrettyDescription())
     disk.defragContiguous()
-    print(disk.prettyDescription())
+    print(disk.printPrettyDescription())
     return disk.checksum()
   }
 
 }
 
 private extension [Int?] {
-  func prettyDescription() -> String {
+  func printPrettyDescription() -> String {
     map { $0 == nil ? "." : "\($0!)" }.joined(separator: "|")
   }
 
@@ -241,7 +241,7 @@ private extension [Int?] {
         }
       }
 
-//      print(prettyDescription())
+//      print(printPrettyDescription())
 
       // ⭐️ Key point
       // Don't forget to move the lastDataIndex to before the start of file

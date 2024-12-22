@@ -46,7 +46,7 @@ struct Day08: AdventDay {
     }
 
     // count unique antinodes.
-    print(antinodeMap.prettyDescription())
+    print(antinodeMap.printPrettyDescription())
     return antinodePoints.count
   }
 
@@ -85,7 +85,7 @@ struct Day08: AdventDay {
     }
 
     // count unique antinodes.
-    print(antinodeMap.prettyDescription())
+    print(antinodeMap.printPrettyDescription())
     return antinodePoints.count
   }
 

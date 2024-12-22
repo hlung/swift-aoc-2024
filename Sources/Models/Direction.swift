@@ -1,6 +1,6 @@
 import Foundation
 
-enum Direction {
+enum Direction: Hashable {
   case up, down, left, right
 
   var pointDiff: Point {

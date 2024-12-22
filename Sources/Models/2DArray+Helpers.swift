@@ -5,6 +5,14 @@ extension Array where Element: Collection,
                       Index == Int,
                       Element.Index == Int {
 
+  var width: Int {
+    first?.count ?? 0
+  }
+
+  var height: Int {
+    count
+  }
+
   func find(_ c: Element.Element) -> Point? {
     for (y, row) in self.enumerated() {
       if let x = row.firstIndex(where: { $0 == c }) {
@@ -31,7 +39,7 @@ extension Array where Element: Collection,
            point.x >= 0 && point.x < self[point.y].count
   }
 
-  func prettyDescription() {
+  func printPrettyDescription() {
     // Print column indices
     print("    ", terminator: "")
     for x in 0..<(first?.count ?? 0) {

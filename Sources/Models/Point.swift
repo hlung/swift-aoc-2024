@@ -46,4 +46,10 @@ struct Point: Hashable, CustomStringConvertible {
       self + Point(1, 0),
     ]
   }
+
+  var left: Point { self + Direction.left.pointDiff }
+  var right: Point { self + Direction.right.pointDiff }
+  var up: Point { self + Direction.up.pointDiff }
+  var down: Point { self + Direction.down.pointDiff }
+
 }
